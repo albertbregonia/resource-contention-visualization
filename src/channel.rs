@@ -11,18 +11,18 @@ use crate::test_harness::{collect_latencies, spawn_n_tasks};
 pub(crate) type TestRequestType = oneshot::Sender<()>;
 type ActorSenderHandle = mpsc::Sender<TestRequestType>;
 
-// For `gradual_channel_test` the actor is spawned and no barrier is used
-// Therefore, many requests are able to resolve immediately, guaranteeing that the queue will never reach a length of `n`
-// However, tokio still has to perform work on when to park/unpark tasks (suspend, wake) contributing to latency
-pub async fn gradual_channel_test(n: u32, buffer_size: usize) -> Vec<Duration> {
-    channel_test(n, buffer_size, None).await
+pub async fn channel_test(n: u32, buffer_size: usize, spike: bool) -> Vec<Duration> {
+    if spike {
+        test(n, buffer_size, Some(Arc::new(Barrier::new(n as usize + 1)))).await
+    } else {
+        // Without the barrier, the actor is already active
+        // Therefore, many requests are able to resolve immediately, guaranteeing that the queue will never reach a length of `n`
+        // However, tokio still has to perform work on when to park/unpark tasks (suspend, wake) contributing to latency
+        test(n, buffer_size, None).await
+    }
 }
 
-pub async fn spike_channel_test(n: u32, buffer_size: usize) -> Vec<Duration> {
-    channel_test(n, buffer_size, Some(Arc::new(Barrier::new(n as usize + 1)))).await
-}
-
-async fn channel_test(n: u32, buffer_size: usize, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {
+async fn test(n: u32, buffer_size: usize, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {
     let handle = spawn_actor(buffer_size, barrier.clone());
     let tasks = spawn_n_tasks(n, move || {
         call_actor_await_response(handle.clone(), barrier.clone())

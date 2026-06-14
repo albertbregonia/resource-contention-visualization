@@ -1,0 +1,5 @@
+{
+    "test_type": {"Channel": {"buffer_size": 10000}},
+    "task_count": 10000,
+    "spike": true
+}

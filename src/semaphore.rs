@@ -7,18 +7,18 @@ use tokio::{
 
 use crate::test_harness::{collect_latencies, spawn_n_tasks};
 
-// this test spawns n tasks, uses a barrier to have them all wait until all tasks are spawned,
-// and then once released, all tasks start their timer to acquire a permit.
-// this is high contention / request spike simulation
-pub async fn spike_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
-    semaphore_test(n, permits, Some(Arc::new(Barrier::new(n as usize + 1)))).await
-}
-
-// same setup as `spike_semaphore_test` but no Barrier.
-// in a normal system, requests usually come in gradually like this so this is a more realistic test
-// however, latency is driven by contention and this test ensures contention is lower
-pub async fn gradual_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
-    semaphore_test(n, permits, None).await
+pub async fn semaphore_test(n: u32, permits: usize, spike: bool) -> Vec<Duration> {
+    if spike {
+        // this test spawns n tasks, uses a barrier to have them all wait until all tasks are spawned,
+        // and then once released, all tasks start their timer to acquire a permit.
+        // this is high contention / request spike simulation
+        test(n, permits, Some(Arc::new(Barrier::new(n as usize + 1)))).await
+    } else {
+        // same setup as spike but no Barrier.
+        // in a normal system, requests usually come in gradually like this so this is a more realistic test
+        // however, latency is driven by contention and this test ensures contention is lower
+        test(n, permits, None).await
+    }
 }
 
 // the advantage of a semaphore is normally n access (permits) to a resource
@@ -30,7 +30,7 @@ pub async fn gradual_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
 // - The latency returned also includes scheduler latency
 // - Semaphore is fair (FIFO) when trying to obtain a permit
 // ref: https://docs.rs/tokio/latest/tokio/sync/struct.Semaphore.html
-async fn semaphore_test(n: u32, permits: usize, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {
+async fn test(n: u32, permits: usize, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {
     let mutex = Arc::new(Semaphore::new(permits));
     let barrier_clone = barrier.clone();
 
