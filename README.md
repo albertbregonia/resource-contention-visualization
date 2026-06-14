@@ -1,4 +1,4 @@
-# Concurrency Benchmark Visualization
+# Resource Contention Visualization
 > **Under high contention, how does resource-access latency vary across concurrency primitives?**
 
 *This idea is important, as synchronization overhead can drive latency just as much as resource contention when understanding throughput.*
