@@ -11,7 +11,7 @@ To better understand `tokio-rs`'s scheduler along with other async constructs an
 
 End-to-end latency being defined by: 
 
-$$T_{\text{response received}} - T_{\text{request sent}}$$ 
+<!-- $$T_{\text{response received}} - T_{\text{request sent}}$$  -->
 
 which implictly includes tokio's scheduler waking and scheduling tasks, etc.&mdash; which is fine, as all users of the system would feel this latency when characterizing system responsiveness.
 
@@ -21,9 +21,28 @@ which implictly includes tokio's scheduler waking and scheduling tasks, etc.&mda
 
 All tests are ran in Rust and piped through `stdout` to Python for data analysis and visualization.
 ```
-./benchmark | python stats.py <output filename NOT including extension>
+CONFIG_PATH="./config.json" ./benchmark | python stats.py <output filename NOT including extension>
 ```
-TODO: detail env vars
+
+All of the configuration is loaded from the [`config.json`](./config.json) file. You may target different configurations using the environment variable `CONFIG_PATH`. By default it targets `config.json` in the root directory.
+
+The structure is as follows:
+
+```json
+{
+    "test_type": enum,
+    "task_count": u32,
+    "spike": bool
+}
+```
+|Test Type Variants| JSON | Note | Example |
+| - | - | - | - |
+| Mutex | `"Mutex"` |
+| Semaphore | `{"Semaphore": {"permits": usize}}` | `permits` must be [1-`Semaphore::MAX`] | `{"Semaphore": {"permits": 100}}` |
+| RwLock | `{"RwLock": {"read_chance": u8}}` | Must be [0-100]% anything greater is the same as 100 | `{"RwLock": {"read_chance": 50}}` |
+| Channel | `{"Channel": {"buffer_size": usize}}` | Must be positive integer | `{"Channel": {"buffer_size": 1000}}` |
+| UnboundedChannel | `"UnboundedChannel"` |
+
 
 # Test Environment
 
