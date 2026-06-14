@@ -12,9 +12,8 @@ futures = "0.3.32"
 serde = { version="*", features = ["derive"]}
 serde_json = "*"
 
-# for logging
-tracing = "*"
-tracing-subscriber = "*"
-
 # for rwlock random read/write
 rand = "*"
+
+[features]
+log_contention = []

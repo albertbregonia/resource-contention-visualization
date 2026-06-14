@@ -12,5 +12,9 @@ where
 }
 
 pub async fn collect_latencies(tasks: JoinAll<JoinHandle<Duration>>) -> Vec<Duration> {
-    tasks.await.into_iter().map(|r| r.expect("failed to join on task")).collect()
+    tasks
+        .await
+        .into_iter()
+        .map(|r| r.expect("failed to join on task"))
+        .collect()
 }

@@ -10,26 +10,26 @@ use crate::test_harness::{collect_latencies, spawn_n_tasks};
 // this test spawns n tasks, uses a barrier to have them all wait until all tasks are spawned,
 // and then once released, all tasks start their timer to lock the mutex
 // this is high contention / request spike simulation
-pub async fn burst_mutex_test(n: u32) -> Vec<Duration> {
+pub async fn spike_mutex_test(n: u32) -> Vec<Duration> {
     mutex_test(n, Some(Arc::new(Barrier::new(n as usize + 1)))).await
 }
 
-// same setup as `burst_mutex_test` but no Barrier. 
+// same setup as `spike_mutex_test` but no Barrier.
 // in a normal system, requests usually come in gradually like this so this is a more realistic test
-// however, latency is driven by contention and this test ensures contention is lower 
+// however, latency is driven by contention and this test ensures contention is lower
 pub async fn gradual_mutex_test(n: u32) -> Vec<Duration> {
     mutex_test(n, None).await
 }
 
-// Mutex is FIFO ref: https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html. 
+// Mutex is FIFO ref: https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html.
 // Therefore, the Nth task suspends until N-1th task unlocks: adding to its latency
 // The latency returned also includes scheduler latency
-// Meaning, when the N-1th task unlocks, it merely signals to wake up the Nth task 
+// Meaning, when the N-1th task unlocks, it merely signals to wake up the Nth task
 // but the Nth task still has to wait until the scheduler runs it
 async fn mutex_test(n: u32, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {
     let mutex = Arc::new(Mutex::new(0)); // 0 is just unused shared data
     let barrier_clone = barrier.clone();
-    
+
     let tasks = spawn_n_tasks(n, move || {
         let mutex = mutex.clone();
         let barrier = barrier_clone.clone();

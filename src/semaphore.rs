@@ -10,13 +10,13 @@ use crate::test_harness::{collect_latencies, spawn_n_tasks};
 // this test spawns n tasks, uses a barrier to have them all wait until all tasks are spawned,
 // and then once released, all tasks start their timer to acquire a permit.
 // this is high contention / request spike simulation
-pub async fn burst_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
+pub async fn spike_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
     semaphore_test(n, permits, Some(Arc::new(Barrier::new(n as usize + 1)))).await
 }
 
-// same setup as `burst_semaphore_test` but no Barrier. 
+// same setup as `spike_semaphore_test` but no Barrier.
 // in a normal system, requests usually come in gradually like this so this is a more realistic test
-// however, latency is driven by contention and this test ensures contention is lower 
+// however, latency is driven by contention and this test ensures contention is lower
 pub async fn gradual_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
     semaphore_test(n, permits, None).await
 }
@@ -33,7 +33,7 @@ pub async fn gradual_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
 async fn semaphore_test(n: u32, permits: usize, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {
     let mutex = Arc::new(Semaphore::new(permits));
     let barrier_clone = barrier.clone();
-    
+
     let tasks = spawn_n_tasks(n, move || {
         let mutex = mutex.clone();
         let barrier = barrier_clone.clone();
