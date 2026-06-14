@@ -1,10 +1,13 @@
 # Concurrency Benchmark Visualization
+> **Under high contention, how does resource-access latency vary across concurrency primitives?**
+
+*This idea is important, as synchronization overhead can drive latency just as much as resource contention when understanding throughput.*
+
 To better understand `tokio-rs`'s scheduler along with other async constructs and concurrency primitives in Rust, this project serves to be a visualization of end-to-end latency when using different methods of accessing shared data (under various conditions) such as: 
  - `mpsc::channel` with a `oneshot::channel` following the actor model (message passing)
  - `Mutex`
  - `RWLock` (read-optimized mutex)
  - `Sempahore` (maintains n permits to some associated data)
-
 
 End-to-end latency being defined by: 
 
@@ -32,7 +35,7 @@ For all tests, these parameteres are kept constant to ensure results are compara
 
 # Dependencies
 
-*See [setup](/setup.md) if you already have a valid version of Rust and Python installed.*
+*See [setup](/docs/setup.md) if you already have a valid version of Rust and Python installed.*
 
 Rust environment:
 - *rustc 1.91.0 (f8297e351 2025-10-28)
@@ -47,7 +50,7 @@ Python environment:
 \* *later versions may also work however, not verified*
 
 # Findings
-See [results.md](/results.md)
+See [results.md](/docs/results.md)
 
 *`results.md` includes images; moved to prevent long README*
 
