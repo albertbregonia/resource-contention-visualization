@@ -28,7 +28,8 @@ pub async fn gradual_semaphore_test(n: u32, permits: usize) -> Vec<Duration> {
 //
 // - If the permit count is exhausted, the task suspends until it is able to obtain one: adding to its latency
 // - The latency returned also includes scheduler latency
-// - Semaphore is FIFO when trying to obtain a permit
+// - Semaphore is fair (FIFO) when trying to obtain a permit
+// ref: https://docs.rs/tokio/latest/tokio/sync/struct.Semaphore.html
 async fn semaphore_test(n: u32, permits: usize, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {
     let mutex = Arc::new(Semaphore::new(permits));
     let barrier_clone = barrier.clone();

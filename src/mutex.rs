@@ -21,7 +21,8 @@ pub async fn gradual_mutex_test(n: u32) -> Vec<Duration> {
     mutex_test(n, None).await
 }
 
-// Mutex is FIFO. Therefore, the Nth task suspends until N-1th task unlocks: adding to its latency
+// Mutex is FIFO ref: https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html. 
+// Therefore, the Nth task suspends until N-1th task unlocks: adding to its latency
 // The latency returned also includes scheduler latency
 // Meaning, when the N-1th task unlocks, it merely signals to wake up the Nth task 
 // but the Nth task still has to wait until the scheduler runs it

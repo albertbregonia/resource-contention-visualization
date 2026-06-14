@@ -16,8 +16,9 @@ pub async fn gradual_rwlock_test(n: u32, read_chance: u8) -> Vec<Duration> {
 }
 
 // RWLock is the same as a mutex (FIFO) but with n readers (technically not physically)
+// ref: https://docs.rs/tokio/latest/tokio/sync/struct.RwLock.html
 // Therefore, readers acquire a permit immediately if no writers have the lock.
-// Otherwise, they block until the writer releases.
+// Otherwise, readers block until the writer releases.
 // TL;DR - it's a regular mutex during write but Semaphore with Semaphore::MAX permits when reading
 // this does have overhead that is why it has a separate test
 // 

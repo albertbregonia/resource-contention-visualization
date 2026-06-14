@@ -17,4 +17,4 @@ cargo build --release
 ```bash
 cp ./target/release/benchmark.exe .
 ```
-3. Setup complete. See [Usage](#usage) section for further instructon.
+3. Setup complete. See [Usage](../README.md#usage) section for further instructon.
