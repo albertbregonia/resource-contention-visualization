@@ -1,5 +1,5 @@
 # Overview
-Different concurrency primitives allow access to shared resources in various ways. In the context of async Rust, tokio-rs and its corresponding scheduler: when a task (green thread) is suspended waiting for access, each primitive has a distinct method to determine task readiness for said resource. Therefore, this affects when the task is woken up and added to the runnable queue to be executed by a worker thread (OS thread). As a result, this coordination between the concurrency primitive and the scheduler drive resource-access latency.
+Different concurrency primitives allow access to shared resources in various ways. In the context of async Rust, tokio-rs and its corresponding scheduler: when a task (green thread) is suspended waiting for access, each primitive has a distinct method to determine task readiness for said resource. Therefore, this affects when the task is woken up, added to the runnable queue, and eventually executed by a worker thread (OS thread). As a result, this coordination between the concurrency primitive and the scheduler drive resource-access latency.
 
 Therefore, we are looking to understand:
 - Given 16 tokio worker threads (OS threads),

@@ -4,8 +4,17 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# these versions are locked to keep tests consistent
 tokio = { version = "1.52.3", features=["full"] }
-futures = "*"
+futures = "0.3.32"
+
+# for config file
+serde = { version="*", features = ["derive"]}
+serde_json = "*"
+
+# for logging
 tracing = "*"
 tracing-subscriber = "*"
-rand = "*" # for rwlock random read/write
+
+# for rwlock random read/write
+rand = "*"
