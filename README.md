@@ -11,7 +11,7 @@ To better understand `tokio-rs`'s scheduler along with other async constructs an
 
 End-to-end latency being defined by: 
 
-<!-- $$T_{\text{response received}} - T_{\text{request sent}}$$  -->
+$$T_{\text{response received}} - T_{\text{request sent}}$$ 
 
 which implictly includes tokio's scheduler waking and scheduling tasks, etc.&mdash; which is fine, as all users of the system would feel this latency when characterizing system responsiveness.
 
@@ -33,7 +33,7 @@ To configure a single test:
 CONFIG_PATH="./config.json" ./benchmark | python stats.py <output filename NOT including extension>
 ```
 
-All of the configuration is loaded from the [`config.json`](./config.json) file. You may target different configurations using the environment variable `CONFIG_PATH`. By default it targets `config.json` in the root directory.
+All of the settings are loaded from the [`config.json`](./config.json) file. You may target different configurations using the environment variable `CONFIG_PATH`. By default it targets `config.json` in the root directory.
 
 The structure is as follows:
 

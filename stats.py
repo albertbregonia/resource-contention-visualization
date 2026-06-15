@@ -54,8 +54,11 @@ class LiveHistogram:
         )
         
     def update(self, frame):
-        if frame <= self.start_delay_frame_count or frame > self.frames + self.start_delay_frame_count:
+        if frame <= self.start_delay_frame_count:
+            # show test name even on blank graph
             self.axes.set_title(f'test={self.test_name}')
+            return
+        if frame > self.frames + self.start_delay_frame_count:
             return
         for _ in range(self.sample_rate):
             # if DATA_LENGTH % SAMPLE_RATE > 0 this will EOFError
