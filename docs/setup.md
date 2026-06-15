@@ -13,6 +13,10 @@ pip install -r requirements.txt
 ```bash
 cargo build --release
 ```
+You may also use the feature flag `log_contention` to see the maximum channel queue length printed to `stderr` 
+```bash
+cargo build --release --features log_contention
+```
 2. Copy the executable to the root of the repository:
 ```bash
 cp ./target/release/benchmark.exe .
