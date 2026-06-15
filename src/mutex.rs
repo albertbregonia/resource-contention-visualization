@@ -8,17 +8,13 @@ use tokio::{
 use crate::test_harness::{collect_latencies, spawn_n_tasks};
 
 pub async fn mutex_test(n: u32, spike: bool) -> Vec<Duration> {
-    if spike {
-        // this test spawns n tasks, uses a barrier to have them all wait until all tasks are spawned,
-        // and then once released, all tasks start their timer to lock the mutex
-        // this is high contention / request spike simulation
-        test(n, Some(Arc::new(Barrier::new(n as usize + 1)))).await
-    } else {
-        // same setup as spike but no Barrier.
-        // in a normal system, requests usually come in gradually like this so this is a more realistic test
-        // however, latency is driven by contention and this test ensures contention is lower
-        test(n, None).await
-    }
+    // this test spawns n tasks, uses a barrier (if spike) to have them all wait until all tasks are spawned,
+    // and then once released, all tasks start their timer to lock the mutex
+    // this is high contention / request spike simulation
+    //
+    // in a normal system, requests usually come in gradually therefore (spike=false, without barrier) is a more realistic test
+    // however, latency is driven by contention and this test ensures contention is lower
+    test(n, spike.then_some(Arc::new(Barrier::new(n as usize + 1)))).await
 }
 
 // Mutex is FIFO ref: https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html.

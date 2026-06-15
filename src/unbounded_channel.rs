@@ -13,14 +13,7 @@ use crate::{
 type ActorSenderHandle = mpsc::UnboundedSender<TestRequestType>;
 
 pub async fn unbounded_channel_test(n: u32, spike: bool) -> Vec<Duration> {
-    if spike {
-        test(n, Some(Arc::new(Barrier::new(n as usize + 1)))).await
-    } else {
-        // Without the barrier, the actor is already active
-        // Therefore, many requests are able to resolve immediately, guaranteeing that the queue will never reach a length of `n`
-        // However, tokio still has to perform work on when to park/unpark tasks (suspend, wake) contributing to latency
-        test(n, None).await
-    }
+    test(n, spike.then_some(Arc::new(Barrier::new(n as usize + 1)))).await
 }
 
 async fn test(n: u32, barrier: Option<Arc<Barrier>>) -> Vec<Duration> {

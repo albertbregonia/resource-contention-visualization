@@ -8,17 +8,12 @@ use tokio::{
 use crate::test_harness::{collect_latencies, spawn_n_tasks};
 
 pub async fn semaphore_test(n: u32, permits: usize, spike: bool) -> Vec<Duration> {
-    if spike {
-        // this test spawns n tasks, uses a barrier to have them all wait until all tasks are spawned,
-        // and then once released, all tasks start their timer to acquire a permit.
-        // this is high contention / request spike simulation
-        test(n, permits, Some(Arc::new(Barrier::new(n as usize + 1)))).await
-    } else {
-        // same setup as spike but no Barrier.
-        // in a normal system, requests usually come in gradually like this so this is a more realistic test
-        // however, latency is driven by contention and this test ensures contention is lower
-        test(n, permits, None).await
-    }
+    test(
+        n,
+        permits,
+        spike.then_some(Arc::new(Barrier::new(n as usize + 1))),
+    )
+    .await
 }
 
 // the advantage of a semaphore is normally n access (permits) to a resource

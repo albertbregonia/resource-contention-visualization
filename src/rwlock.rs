@@ -8,11 +8,12 @@ use tokio::{
 use crate::test_harness::{collect_latencies, spawn_n_tasks};
 
 pub async fn rwlock_test(n: u32, read_chance: u8, spike: bool) -> Vec<Duration> {
-    if spike {
-        test(n, read_chance, Some(Arc::new(Barrier::new(n as usize + 1)))).await
-    } else {
-        test(n, read_chance, None).await
-    }
+    test(
+        n,
+        read_chance,
+        spike.then_some(Arc::new(Barrier::new(n as usize + 1))),
+    )
+    .await
 }
 
 // RWLock is the same as a mutex (FIFO) but with n readers (technically not physically)
