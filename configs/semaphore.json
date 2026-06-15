@@ -1,0 +1,5 @@
+{
+    "test_type": {"Semaphore": {"permits": 1}},
+    "task_count": 10000,
+    "spike": true
+}

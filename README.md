@@ -20,6 +20,15 @@ which implictly includes tokio's scheduler waking and scheduling tasks, etc.&mda
 # Usage
 
 All tests are ran in Rust and piped through `stdout` to Python for data analysis and visualization.
+
+*Assuming you have gone through [setup](/docs/setup.md):*
+
+To run all tests at default configurations found in [/configs](/configs):
+```
+./run.sh
+```
+
+To configure a single test:
 ```
 CONFIG_PATH="./config.json" ./benchmark | python stats.py <output filename NOT including extension>
 ```
@@ -51,6 +60,7 @@ For all tests, these parameteres are kept constant to ensure results are compara
 | - | - |
 | Worker Thread Count | 16 |
 | Request Count | 10,000 |
+| Spike | true |
 
 # Dependencies
 

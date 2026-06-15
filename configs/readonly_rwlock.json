@@ -1,0 +1,5 @@
+{
+    "test_type": {"RwLock": {"read_chance": 100}},
+    "task_count": 10000,
+    "spike": true
+}

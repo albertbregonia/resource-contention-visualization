@@ -1,0 +1,5 @@
+{
+    "test_type": "UnboundedChannel",
+    "task_count": 10000,
+    "spike": true
+}

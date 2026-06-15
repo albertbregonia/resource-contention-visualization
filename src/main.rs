@@ -67,7 +67,7 @@ async fn main() {
         TestType::UnboundedChannel => unbounded_channel_test(config.task_count, config.spike).await,
     };
     dataset.sort(); // data needs to be sorted first before histogram
-    for v in dataset.into_iter().map(|d| d.as_secs_f64() * 1000.0) {
-        println!("{v}"); // convert to ms and pipe to python
+    for v in dataset.into_iter().map(|d| d.as_secs_f64() * 1_000_000.0) {
+        println!("{v}"); // convert to us and pipe to python
     }
 }
