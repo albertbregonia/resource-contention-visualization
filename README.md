@@ -3,6 +3,10 @@
 
 *This idea is important, as synchronization overhead can drive latency just as much as resource contention when understanding throughput.*
 
+| Bounded Channel Latency (n=10_000) | Mutex Latency (n=10_000) |
+| - | - |
+| ![mpsc::channel @ buffer_size=10_000](./docs/histograms/channel.gif) | ![sync::Mutex](./docs/histograms/mutex.gif) |
+
 To better understand `tokio-rs`'s scheduler along with other async constructs and concurrency primitives in Rust, this project serves to be a visualization of end-to-end latency when using different methods of accessing shared data (under various conditions) such as: 
  - `mpsc::channel` with a `oneshot::channel` following the actor model (message passing)
  - `Mutex`
