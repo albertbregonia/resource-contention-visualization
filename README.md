@@ -52,6 +52,7 @@ The structure is as follows:
 | Channel | `{"Channel": {"buffer_size": usize}}` | Must be positive integer | `{"Channel": {"buffer_size": 1000}}` |
 | UnboundedChannel | `"UnboundedChannel"` |
 
+You may run tests where `spike=false` to see standard operation of each of the concurrency primitives as `spike=true` is more of a worst-case load test with a big *spike* in contention as opposed to gradually.
 
 # Test Environment
 

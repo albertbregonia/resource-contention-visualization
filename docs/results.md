@@ -3,7 +3,7 @@ Different concurrency primitives allow access to shared resources in various way
 
 Therefore, we are looking to understand:
 - Given 16 tokio worker threads (OS threads),
-- Given a 10,000 tasks (green threads) all trying to access a shared resource,
+- Given 10,000 tasks (green threads) all requesting to access a shared resource,
 - When using various concurrency primitives,
 - How long does it take the system to access the requested resource?
 
@@ -24,6 +24,23 @@ This idea is important, as synchronization overhead can drive latency just as mu
     - In our case, there are no other tasks to reorder in favor of more "meaningful work". Therefore, we shouldn't see this issue but if it did, ultimately, it contributes to the observed latency when using tokio.
 
 # Channel
+
+| Bounded Channel @ buffer_size=10_000 | Unbounded Channel @ buffer_size=inf. | Bounded Channel @ buffer_size=16 |
+| - | - | - |
+| ![mpsc::channel @ buffer_size=10_000](./histograms/channel.gif) | ![mpsc::unbounded_channel @ buffer_size=inf.](./histograms/unbounded.gif) | ![mpsc::channel buffer_size=16](./histograms/small_buffer_channel.gif) |
+
 # Mutex
+
+![sync::Mutex](./histograms/mutex.gif)
+
 # RwLock
+
+| RwLock @ 50% Read 50% Write | RwLock @ 0% Read 100% Write | RwLock @ 100% Read 0% Write | RwLock @ 99% Read 1% Write |
+| - | - | - | - |
+| ![sync::RwLock @ 50% Read 50% Write ](./histograms/rwlock.gif) | ![sync::RwLock @ 0% Read 100% Write](./histograms/writeonly_rwlock.gif) | ![sync::RwLock @ 100% Read 0% Write](./histograms/readonly_rwlock.gif) | ![sync::RwLock @ 99% Read 1% Write](./histograms/read99_rwlock.gif) | 
+
 # Semaphore
+
+| Semaphore @ permits=1 | Semaphore @ permits=n=10_000 | 
+| - | - |
+| ![sync::Semaphore @ permits=1](./histograms/semaphore.gif) | ![sync::Semaphore @ permits=n=10_000](./histograms/max_semaphore.gif) |
